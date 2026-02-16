@@ -3,391 +3,778 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0f172a">
     <title>Sentinel Tactical</title>
-    <link rel="manifest" href="manifest.json">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
+            color: white;
             overflow-x: hidden;
         }
-        
+
         .container {
-            max-width: 480px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
         }
-        
-        header {
+
+        /* Header */
+        .header {
             text-align: center;
             padding: 20px 0;
-            border-bottom: 1px solid #334155;
+            border-bottom: 2px solid #00ff88;
+            margin-bottom: 20px;
         }
-        
-        h1 { font-size: 24px; color: #22c55e; }
-        
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
         .status {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #94a3b8;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 5px 15px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
         }
-        
+
         .status-dot {
             width: 8px;
             height: 8px;
+            background: #00ff88;
             border-radius: 50%;
-            background: #22c55e;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        
-        .card {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 16px 0;
+
+        /* Assets Section */
+        .assets-section {
+            margin-bottom: 20px;
         }
-        
-        .asset-row {
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #00ff88;
+        }
+
+        .asset-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
-            border-bottom: 1px solid #334155;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
         }
-        
-        .asset-row:last-child { border-bottom: none; }
-        
-        .asset-name { font-size: 18px; font-weight: bold; }
-        .asset-price { color: #94a3b8; font-size: 14px; }
-        
-        .tier {
-            padding: 6px 14px;
+
+        .asset-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .asset-card.strong {
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .asset-card.moderate {
+            border-color: #ffcc00;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+        }
+
+        .asset-card.weak {
+            border-color: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .asset-info h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .asset-price {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .badge {
+            padding: 8px 15px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             text-transform: uppercase;
         }
-        
-        .tier-FORTE { background: #22c55e; color: white; }
-        .tier-MODERADO { background: #eab308; color: black; }
-        .tier-FRACO { background: #ef4444; color: white; }
-        
+
+        .badge.strong {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .badge.moderate {
+            background: #ffcc00;
+            color: #000;
+        }
+
+        .badge.weak {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* Buttons */
+        .btn-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
         .btn {
-            width: 100%;
-            padding: 18px;
+            padding: 18px 30px;
             border: none;
             border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        
+
         .btn-primary {
-            background: #22c55e;
-            color: white;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
         }
-        
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
+        }
+
         .btn-danger {
-            background: #ef4444;
-            color: white;
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+            display: none;
         }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88 0%, #00aa55 100%);
+            color: #fff;
+            display: none;
         }
-        
-        /* Tela de Execução */
-        .execute-screen {
+
+        .btn-loss {
+            background: linear-gradient(135deg, #ff4444 0%, #aa0000 100%);
+            color: #fff;
+            display: none;
+        }
+
+        /* Alert Overlay */
+        .alert-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: #450a0a;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.9);
             display: none;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            align-items: center;
+            z-index: 1000;
+            animation: flash 0.5s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+
+        .alert-content {
             text-align: center;
+            padding: 40px;
         }
-        
-        .execute-screen.active { display: flex; }
-        
-        .countdown-bar {
-            width: 60px;
-            height: 200px;
-            background: #334155;
-            border-radius: 30px;
-            overflow: hidden;
-            position: relative;
-            margin: 30px 0;
-        }
-        
-        .countdown-fill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #ef4444;
-            transition: height 0.1s linear;
-        }
-        
-        .countdown-fill.blink {
-            animation: blink 0.5s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        .big-text {
-            font-size: 32px;
+
+        .alert-title {
+            font-size: 48px;
             font-weight: bold;
-            margin: 10px 0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
-        
-        .news-warning {
-            background: #451a03;
-            border-left: 4px solid #eab308;
+
+        .alert-asset {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .alert-direction {
+            font-size: 64px;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 1);
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .analysis-title {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .signal-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .signal-asset {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .signal-direction {
+            font-size: 32px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .signal-expiration {
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        /* History Section */
+        .history-section {
+            margin-top: 20px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 12px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
-        
-        .hidden { display: none !important; }
+
+        .history-win {
+            border-left: 4px solid #00ff88;
+        }
+
+        .history-loss {
+            border-left: 4px solid #ff4444;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-result {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .result-win { color: #00ff88; }
+        .result-loss { color: #ff4444; }
+
+        /* Timer */
+        .timer {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #00ff88;
+            display: none;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #00ff88;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 255, 136, 0.3);
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Result Buttons */
+        .result-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-buttons .btn {
+            flex: 1;
+        }
+
+        /* Add Asset Input */
+        .add-asset-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .add-asset-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .add-asset-input::placeholder {
+            color: #888;
+        }
+
+        .btn-add {
+            padding: 12px 20px;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <!-- Tela Dashboard -->
-    <div id="dashboard" class="container">
-        <header>
-            <h1>🎯 SENTINEL TACTICAL</h1>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🎯 SENTINEL TACTICAL</div>
             <div class="status">
                 <span class="status-dot"></span>
-                <span id="connection-status">Online</span>
+                <span id="connectionStatus">Online</span>
             </div>
-        </header>
-        
-        <div class="card">
-            <h3 style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">📊 ATIVOS</h3>
-            <div id="assets-list">
-                <div class="asset-row">
-                    <div>
-                        <div class="asset-name">EUR/USD</div>
-                        <div class="asset-price">Carregando...</div>
-                    </div>
-                    <span class="tier tier-FRACO">Analisando</span>
+        </div>
+
+        <!-- Add Asset -->
+        <div class="add-asset-section">
+            <input type="text" class="add-asset-input" id="newAsset" placeholder="Adicionar par (ex: USD/JPY)">
+            <button class="btn-add" onclick="addAsset()">+</button>
+        </div>
+
+        <!-- Assets List -->
+        <div class="assets-section">
+            <h2 class="section-title">📊 ATIVOS MONITORADOS</h2>
+            <div class="asset-list" id="assetList">
+                <!-- Assets will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <div class="analysis-section" id="analysisSection">
+            <h3 class="analysis-title">🚨 SINAL DETECTADO</h3>
+            <div id="signalContent"></div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer" id="timer">05:00</div>
+
+        <!-- Main Buttons -->
+        <div class="btn-section">
+            <button class="btn btn-primary" id="startBtn" onclick="startSession()">
+                🚀 INICIAR SESSÃO
+            </button>
+            <button class="btn btn-danger" id="enteredBtn" onclick="tradeEntered()">
+                ✅ ENTREI!
+            </button>
+        </div>
+
+        <!-- Result Buttons -->
+        <div class="result-buttons" id="resultButtons">
+            <button class="btn btn-success" onclick="recordResult('WIN')">
+                🏆 WIN
+            </button>
+            <button class="btn btn-loss" onclick="recordResult('LOSS')">
+                ❌ LOSS
+            </button>
+        </div>
+
+        <!-- History -->
+        <div class="history-section">
+            <h2 class="section-title">📈 HISTÓRICO</h2>
+            <div id="historyList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Carregando...</p>
                 </div>
             </div>
         </div>
-        
-        <div id="news-section" class="card hidden">
-            <h3 style="color: #eab308; font-size: 12px; margin-bottom: 12px;">⚠️ NOTÍCIAS PRÓXIMAS</h3>
-            <div id="news-list"></div>
-        </div>
-        
-        <button class="btn btn-primary" id="start-session" onclick="startSession()">
-            INICIAR SESSÃO
-        </button>
     </div>
-    
-    <!-- Tela Execução -->
-    <div id="execute" class="execute-screen">
-        <div class="big-text" style="color: #ef4444;">🔴 EXECUTE 🔴</div>
-        <div class="big-text" id="signal-asset">EUR/USD</div>
-        <div class="big-text" id="signal-direction">COMPRA ⬆️</div>
-        
-        <div class="countdown-bar">
-            <div class="countdown-fill" id="countdown-fill"></div>
+
+    <!-- Alert Overlay -->
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-content">
+            <div class="alert-title">🚨 OPORTUNIDADE!</div>
+            <div class="alert-asset" id="alertAsset">EUR/USD</div>
+            <div class="alert-direction" id="alertDirection">COMPRA AGORA!</div>
         </div>
-        
-        <div style="font-size: 48px; font-weight: bold;" id="countdown-text">15</div>
-        <div style="color: #94a3b8; margin-top: 10px;">CLICK CALL NO PC!</div>
-        
-        <button class="btn btn-primary" style="margin-top: 30px;" onclick="confirmEntry()">
-            ✅ ENTREI!
-        </button>
-        
-        <button class="btn btn-danger" style="margin-top: 10px;" onclick="cancelSignal()">
-            CANCELAR
-        </button>
     </div>
 
     <script>
-        // CONFIGURAÇÃO — TROQUE PELO SEU URL DO RAILWAY
-        const API_URL = 'https://SEU-APP.up.railway.app';
-        let ws = null;
+        // Config
+        const API_URL = 'https://sentinel-backend-1-4xzq.onrender.com';
+        let assets = ['EUR/USD', 'GBP/USD', 'BTC/USDT'];
         let sessionActive = false;
         let currentSignal = null;
-        
-        // Conexão WebSocket
-        function connectWS() {
-            ws = new WebSocket(wss://${API_URL.replace('https://', '')}/ws);
+        let tradeInProgress = false;
+        let timerInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAssets();
+            loadHistory();
+            setInterval(updateAssets, 5000); // Update every 5 seconds
+        });
+
+        // Load Assets
+        async function loadAssets() {
+            const list = document.getElementById('assetList');
+            list.innerHTML = '';
             
-            ws.onopen = () => {
-                console.log('WS Conectado');
-                ws.send(JSON.stringify({action: 'subscribe', assets: ['EUR/USD', 'GBP/USD', 'BTC/USDT']}));
-            };
-            
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                if (data.type === 'prices') updatePrices(data.data);
-                if (data.type === 'news') updateNews(data.data);
-            };
-            
-            ws.onclose = () => {
-                setTimeout(connectWS, 3000); // Reconecta
-            };
-        }
-        
-        // Atualiza preços na tela
-        async function updatePrices(prices) {
-            const assets = [
-                {name: 'EUR/USD', symbol: 'EURUSDT'},
-                {name: 'GBP/USD', symbol: 'GBPUSDT'},
-                {name: 'BTC/USDT', symbol: 'BTCUSDT'}
-            ];
-            
-            let html = '';
             for (const asset of assets) {
-                const price = prices[asset.symbol];
-                if (!price) continue;
-                
-                // Busca análise
-                const analysis = await fetch(${API_URL}/analyze/${asset.name}).then(r => r.json());
-                
-                html += `
-                    <div class="asset-row">
-                        <div>
-                            <div class="asset-name">${asset.name}</div>
-                            <div class="asset-price">$${price.price.toFixed(asset.symbol === 'BTCUSDT' ? 2 : 5)}</div>
-                        </div>
-                        <span class="tier tier-${analysis.tier}">${analysis.tier}</span>
+                const card = document.createElement('div');
+                card.className = 'asset-card';
+                card.id = asset-${asset.replace('/', '-')};
+                card.innerHTML = `
+                    <div class="asset-info">
+                        <h3>${asset}</h3>
+                        <div class="asset-price" id="price-${asset.replace('/', '-')}">Carregando...</div>
                     </div>
+                    <div class="badge weak" id="badge-${asset.replace('/', '-')}">ANALISANDO</div>
                 `;
+                card.onclick = () => analyzeAsset(asset);
+                list.appendChild(card);
             }
             
-            document.getElementById('assets-list').innerHTML = html;
+            updateAssets();
         }
-        
-        // Atualiza notícias
-        function updateNews(news) {
-            if (!news || news.length === 0) return;
+
+        // Add Asset
+        function addAsset() {
+            const input = document.getElementById('newAsset');
+            const asset = input.value.trim().toUpperCase();
             
-            const section = document.getElementById('news-section');
-            const list = document.getElementById('news-list');
+            if (asset && !assets.includes(asset)) {
+                assets.push(asset);
+                input.value = '';
+                loadAssets();
+            }
+        }
+
+        // Update Assets Data
+        async function updateAssets() {
+            for (const asset of assets) {
+                try {
+                    const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
+                    const data = await response.json();
+                    
+                    updateAssetCard(asset, data);
+                } catch (error) {
+                    console.error(Erro ao atualizar ${asset}:, error);
+                }
+            }
+        }
+
+        // Update Asset Card
+        function updateAssetCard(asset, data) {
+            const safeId = asset.replace('/', '-');
+            const card = document.getElementById(asset-${safeId});
+            const badge = document.getElementById(badge-${safeId});
+            const price = document.getElementById(price-${safeId});
             
-            section.classList.remove('hidden');
-            list.innerHTML = news.map(n => `
-                <div class="news-warning">
-                    <strong>${n.time}</strong> ${n.currency} — ${n.event}
+            if (!card || !badge) return;
+            
+            // Update price
+            if (data.price) {
+                price.textContent = R$ ${data.price.toFixed(2)};
+            }
+            
+            // Update badge
+            card.classList.remove('strong', 'moderate', 'weak');
+            badge.classList.remove('strong', 'moderate', 'weak');
+            
+            if (data.tier === 'FORTE') {
+                card.classList.add('strong');
+                badge.classList.add('strong');
+                badge.textContent = '🟢 FORTE';
+            } else if (data.tier === 'MODERADO') {
+                card.classList.add('moderate');
+                badge.classList.add('moderate');
+                badge.textContent = '🟡 MODERADO';
+            } else {
+                card.classList.add('weak');
+                badge.classList.add('weak');
+                badge.textContent = '🔴 FRACO';
+            }
+            
+            // Check for strong signal during active session
+            if (sessionActive && data.tier === 'FORTE' && data.signal && !tradeInProgress) {
+                showAlert(asset, data.signal.direction);
+            }
+        }
+
+        // Analyze Specific Asset
+        async function analyzeAsset(asset) {
+            try {
+                const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
+                const data = await response.json();
+                
+                const section = document.getElementById('analysisSection');
+                const content = document.getElementById('signalContent');
+                
+                section.style.display = 'block';
+                
+                if (data.signal) {
+                    content.innerHTML = `
+                        <div class="signal-card">
+                            <div class="signal-asset">${asset}</div>
+                            <div class="signal-direction">${data.signal.direction === 'CALL' ? '📈 COMPRA' : '📉 VENDA'}</div>
+                            <div class="signal-expiration">⏱️ Expiração: ${data.signal.expiration} minutos</div>
+                            <div style="margin-top: 10px; color: #aaa;">
+                                Preço: ${data.signal.entry.toFixed(4)}<br>
+                                RSI: ${data.indicators?.rsi || 'N/A'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    currentSignal = { asset, ...data.signal };
+                } else {
+                    content.innerHTML = `
+                        <div class="signal-card" style="border-color: #ff4444;">
+                            <div class="signal-asset">${asset}</div>
+                            <div style="color: #ff4444;">Sem sinal no momento</div>
+                            <div style="margin-top: 10px; color: #aaa;">
+                                Força: ${data.tier}<br>
+                                Aguarde oportunidade FORTE 🟢
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro na análise:', error);
+            }
+        }
+
+        // Start Session
+        function startSession() {
+            sessionActive = true;
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('enteredBtn').style.display = 'block';
+            
+            // Play sound
+            playSound('start');
+            
+            alert('🚀 Sessão iniciada! Monitorando ativos...');
+        }
+
+        // Show Alert
+        function showAlert(asset, direction) {
+            tradeInProgress = true;
+            currentSignal = { asset, direction };
+            
+            const overlay = document.getElementById('alertOverlay');
+            const alertAsset = document.getElementById('alertAsset');
+            const alertDirection = document.getElementById('alertDirection');
+            
+            alertAsset.textContent = asset;
+            alertDirection.textContent = direction === 'CALL' ? 'COMPRA AGORA! 📈' : 'VENDA AGORA! 📉';
+            
+            overlay.style.display = 'flex';
+            
+            // Play alert sound
+            playSound('alert');
+            
+            // Vibrate
+            if (navigator.vibrate) {
+                navigator.vibrate([500, 200, 500, 200, 500]);
+            }
+            
+            // Auto hide after 10 seconds
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 10000);
+        }
+
+        // Trade Entered
+        function tradeEntered() {
+            tradeInProgress = true;
+            document.getElementById('enteredBtn').style.display = 'none';
+            document.getElementById('resultButtons').style.display = 'flex';
+            document.getElementById('timer').style.display = 'block';
+            
+            // Start 5 minute timer
+            let seconds = 300; // 5 minutes
+            const timerEl = document.getElementById('timer');
+            
+            timerInterval = setInterval(() => {
+                seconds--;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerEl.textContent = ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')};
+                
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerEl.textContent = '00:00';
+                    playSound('finish');
+                }
+            }, 1000);
+            
+            playSound('enter');
+        }
+
+        // Record Result
+        async function recordResult(result) {
+            clearInterval(timerInterval);
+            
+            const trade = {
+                asset: currentSignal?.asset || 'Unknown',
+                direction: currentSignal?.direction || 'Unknown',
+                result: result,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to localStorage (in real app, send to backend)
+            let history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
+            history.unshift(trade);
+            localStorage.setItem('tradeHistory', JSON.stringify(history));
+            
+            // Reset UI
+            document.getElementById('resultButtons').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            
+            tradeInProgress = false;
+            currentSignal = null;
+            
+            // Play sound
+            playSound(result === 'WIN' ? 'win' : 'loss');
+            
+            // Refresh history
+            loadHistory();
+            
+            alert(${result === 'WIN' ? '🏆 WIN!' : '❌ LOSS'} registrado!);
+        }
+
+        // Load History
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
+            const list = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #888;">Nenhuma operação registrada</p>';
+                return;
+            }
+            
+            list.innerHTML = history.map(trade => `
+                <div class="history-item ${trade.result === 'WIN' ? 'history-win' : 'history-loss'}">
+                    <div class="history-info">
+                        <strong>${trade.asset}</strong>
+                        <div style="font-size: 12px; color: #888;">
+                            ${new Date(trade.timestamp).toLocaleString('pt-BR')}
+                        </div>
+                    </div>
+                    <div class="history-result ${trade.result === 'WIN' ? 'result-win' : 'result-loss'}">
+                        ${trade.result}
+                    </div>
                 </div>
             `).join('');
         }
-        
-        // Inicia sessão
-        async function startSession() {
-            sessionActive = true;
-            document.getElementById('start-session').textContent = 'SESSÃO ATIVA';
-            document.getElementById('start-session').disabled = true;
+
+        // Play Sound (using Web Audio API)
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
             
-            // Procura oportunidade
-            await scanForSignal();
-        }
-        
-        // Scans por sinal
-        async function scanForSignal() {
-            if (!sessionActive) return;
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
             
-            const assets = ['EUR/USD', 'GBP/USD', 'BTC/USDT'];
-            
-            for (const asset of assets) {
-                const analysis = await fetch(${API_URL}/analyze/${asset}).then(r => r.json());
-                
-                if (analysis.tier === 'FORTE' && analysis.signal && !analysis.news_block) {
-                    showSignal(analysis);
-                    return;
-                }
+            switch(type) {
+                case 'alert':
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    break;
+                case 'win':
+                    oscillator.frequency.value = 1200;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'loss':
+                    oscillator.frequency.value = 300;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    break;
+                default:
+                    oscillator.frequency.value = 600;
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.2);
             }
-            
-            // Tenta novamente em 5s
-            setTimeout(scanForSignal, 5000);
         }
-        
-        // Mostra tela de execução
-        function showSignal(analysis) {
-            currentSignal = analysis;
-            document.getElementById('signal-asset').textContent = analysis.asset;
-            document.getElementById('signal-direction').textContent = 
-                analysis.signal.direction === 'CALL' ? 'COMPRA ⬆️' : 'VENDA ⬇️';
-            
-            document.getElementById('execute').classList.add('active');
-            
-            // Contagem regressiva
-            let timeLeft = 15;
-            const fill = document.getElementById('countdown-fill');
-            const text = document.getElementById('countdown-text');
-            
-            const interval = setInterval(() => {
-                timeLeft--;
-                text.textContent = timeLeft < 10 ? 0${timeLeft} : timeLeft;
-                fill.style.height = ${((15 - timeLeft) / 15) * 100}%;
-                
-                if (timeLeft <= 3) fill.classList.add('blink');
-                
-                if (timeLeft <= 0) {
-                    clearInterval(interval);
-                    // Auto-cancela
-                    cancelSignal();
-                }
-            }, 1000);
-        }
-        
-        // Confirma entrada
-        async function confirmEntry() {
-            if (!currentSignal) return;
-            
-            await fetch(${API_URL}/trade, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    asset: currentSignal.asset,
-                    direction: currentSignal.signal.direction,
-                    entry_price: currentSignal.signal.entry
-                })
-            });
-            
-            alert('✅ Trade registrado! Aguarde resultado em 5min.');
-            cancelSignal();
-        }
-        
-        // Cancela sinal
-        function cancelSignal() {
-            document.getElementById('execute').classList.remove('active');
-            currentSignal = null;
-            setTimeout(scanForSignal, 2000);
-        }
-        
-        // Inicia
-        connectWS();
-        setInterval(() => fetch(${API_URL}/dashboard).then(r => r.json()).then(updatePrices), 5000);
+
+        // Close alert on click
+        document.getElementById('alertOverlay').onclick = function() {
+            this.style.display = 'none';
+        };
     </script>
 </body>
 </html>
