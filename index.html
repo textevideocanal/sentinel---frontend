@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <title>Sentinel Tactical</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #334155;
+        }
+        
+        h1 { font-size: 24px; color: #22c55e; }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .asset-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .asset-row:last-child { border-bottom: none; }
+        
+        .asset-name { font-size: 18px; font-weight: bold; }
+        .asset-price { color: #94a3b8; font-size: 14px; }
+        
+        .tier {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .tier-FORTE { background: #22c55e; color: white; }
+        .tier-MODERADO { background: #eab308; color: black; }
+        .tier-FRACO { background: #ef4444; color: white; }
+        
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Tela de Execução */
+        .execute-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #450a0a;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .execute-screen.active { display: flex; }
+        
+        .countdown-bar {
+            width: 60px;
+            height: 200px;
+            background: #334155;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .countdown-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ef4444;
+            transition: height 0.1s linear;
+        }
+        
+        .countdown-fill.blink {
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .big-text {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .news-warning {
+            background: #451a03;
+            border-left: 4px solid #eab308;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Tela Dashboard -->
+    <div id="dashboard" class="container">
+        <header>
+            <h1>🎯 SENTINEL TACTICAL</h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span id="connection-status">Online</span>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h3 style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">📊 ATIVOS</h3>
+            <div id="assets-list">
+                <div class="asset-row">
+                    <div>
+                        <div class="asset-name">EUR/USD</div>
+                        <div class="asset-price">Carregando...</div>
+                    </div>
+                    <span class="tier tier-FRACO">Analisando</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="news-section" class="card hidden">
+            <h3 style="color: #eab308; font-size: 12px; margin-bottom: 12px;">⚠️ NOTÍCIAS PRÓXIMAS</h3>
+            <div id="news-list"></div>
+        </div>
+        
+        <button class="btn btn-primary" id="start-session" onclick="startSession()">
+            INICIAR SESSÃO
+        </button>
+    </div>
+    
+    <!-- Tela Execução -->
+    <div id="execute" class="execute-screen">
+        <div class="big-text" style="color: #ef4444;">🔴 EXECUTE 🔴</div>
+        <div class="big-text" id="signal-asset">EUR/USD</div>
+        <div class="big-text" id="signal-direction">COMPRA ⬆️</div>
+        
+        <div class="countdown-bar">
+            <div class="countdown-fill" id="countdown-fill"></div>
+        </div>
+        
+        <div style="font-size: 48px; font-weight: bold;" id="countdown-text">15</div>
+        <div style="color: #94a3b8; margin-top: 10px;">CLICK CALL NO PC!</div>
+        
+        <button class="btn btn-primary" style="margin-top: 30px;" onclick="confirmEntry()">
+            ✅ ENTREI!
+        </button>
+        
+        <button class="btn btn-danger" style="margin-top: 10px;" onclick="cancelSignal()">
+            CANCELAR
+        </button>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO — TROQUE PELO SEU URL DO RAILWAY
+        const API_URL = 'https://SEU-APP.up.railway.app';
+        let ws = null;
+        let sessionActive = false;
+        let currentSignal = null;
+        
+        // Conexão WebSocket
+        function connectWS() {
+            ws = new WebSocket(wss://${API_URL.replace('https://', '')}/ws);
+            
+            ws.onopen = () => {
+                console.log('WS Conectado');
+                ws.send(JSON.stringify({action: 'subscribe', assets: ['EUR/USD', 'GBP/USD', 'BTC/USDT']}));
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'prices') updatePrices(data.data);
+                if (data.type === 'news') updateNews(data.data);
+            };
+            
+            ws.onclose = () => {
+                setTimeout(connectWS, 3000); // Reconecta
+            };
+        }
+        
+        // Atualiza preços na tela
+        async function updatePrices(prices) {
+            const assets = [
+                {name: 'EUR/USD', symbol: 'EURUSDT'},
+                {name: 'GBP/USD', symbol: 'GBPUSDT'},
+                {name: 'BTC/USDT', symbol: 'BTCUSDT'}
+            ];
+            
+            let html = '';
+            for (const asset of assets) {
+                const price = prices[asset.symbol];
+                if (!price) continue;
+                
+                // Busca análise
+                const analysis = await fetch(${API_URL}/analyze/${asset.name}).then(r => r.json());
+                
+                html += `
+                    <div class="asset-row">
+                        <div>
+                            <div class="asset-name">${asset.name}</div>
+                            <div class="asset-price">$${price.price.toFixed(asset.symbol === 'BTCUSDT' ? 2 : 5)}</div>
+                        </div>
+                        <span class="tier tier-${analysis.tier}">${analysis.tier}</span>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('assets-list').innerHTML = html;
+        }
+        
+        // Atualiza notícias
+        function updateNews(news) {
+            if (!news || news.length === 0) return;
+            
+            const section = document.getElementById('news-section');
+            const list = document.getElementById('news-list');
+            
+            section.classList.remove('hidden');
+            list.innerHTML = news.map(n => `
+                <div class="news-warning">
+                    <strong>${n.time}</strong> ${n.currency} — ${n.event}
+                </div>
+            `).join('');
+        }
+        
+        // Inicia sessão
+        async function startSession() {
+            sessionActive = true;
+            document.getElementById('start-session').textContent = 'SESSÃO ATIVA';
+            document.getElementById('start-session').disabled = true;
+            
+            // Procura oportunidade
+            await scanForSignal();
+        }
+        
+        // Scans por sinal
+        async function scanForSignal() {
+            if (!sessionActive) return;
+            
+            const assets = ['EUR/USD', 'GBP/USD', 'BTC/USDT'];
+            
+            for (const asset of assets) {
+                const analysis = await fetch(${API_URL}/analyze/${asset}).then(r => r.json());
+                
+                if (analysis.tier === 'FORTE' && analysis.signal && !analysis.news_block) {
+                    showSignal(analysis);
+                    return;
+                }
+            }
+            
+            // Tenta novamente em 5s
+            setTimeout(scanForSignal, 5000);
+        }
+        
+        // Mostra tela de execução
+        function showSignal(analysis) {
+            currentSignal = analysis;
+            document.getElementById('signal-asset').textContent = analysis.asset;
+            document.getElementById('signal-direction').textContent = 
+                analysis.signal.direction === 'CALL' ? 'COMPRA ⬆️' : 'VENDA ⬇️';
+            
+            document.getElementById('execute').classList.add('active');
+            
+            // Contagem regressiva
+            let timeLeft = 15;
+            const fill = document.getElementById('countdown-fill');
+            const text = document.getElementById('countdown-text');
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                text.textContent = timeLeft < 10 ? 0${timeLeft} : timeLeft;
+                fill.style.height = ${((15 - timeLeft) / 15) * 100}%;
+                
+                if (timeLeft <= 3) fill.classList.add('blink');
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    // Auto-cancela
+                    cancelSignal();
+                }
+            }, 1000);
+        }
+        
+        // Confirma entrada
+        async function confirmEntry() {
+            if (!currentSignal) return;
+            
+            await fetch(${API_URL}/trade, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    asset: currentSignal.asset,
+                    direction: currentSignal.signal.direction,
+                    entry_price: currentSignal.signal.entry
+                })
+            });
+            
+            alert('✅ Trade registrado! Aguarde resultado em 5min.');
+            cancelSignal();
+        }
+        
+        // Cancela sinal
+        function cancelSignal() {
+            document.getElementById('execute').classList.remove('active');
+            currentSignal = null;
+            setTimeout(scanForSignal, 2000);
+        }
+        
+        // Inicia
+        connectWS();
+        setInterval(() => fetch(${API_URL}/dashboard).then(r => r.json()).then(updatePrices), 5000);
+    </script>
+</body>
+</html>
