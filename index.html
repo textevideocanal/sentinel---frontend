@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentinel Tactical</title>
+    <title>Sentinel Tactical Pro</title>
     <style>
         * {
             margin: 0;
@@ -13,42 +13,56 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f0f2e 100%);
             min-height: 100vh;
             color: white;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
 
         /* Header */
         .header {
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid #00ff88;
-            margin-bottom: 20px;
+            padding: 15px 0;
+            border-bottom: 3px solid #00ff88;
+            margin-bottom: 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 15px;
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
             color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             margin-top: 10px;
-            padding: 5px 15px;
-            background: rgba(0, 255, 136, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(0, 255, 136, 0.15);
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
 
         .status-dot {
@@ -60,73 +74,210 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
         }
 
-        /* Assets Section */
-        .assets-section {
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
             color: #00ff88;
         }
 
-        .asset-list {
+        .stat-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .stat-card.negative .stat-value {
+            color: #ff4444;
+        }
+
+        /* Add Asset */
+        .add-asset-section {
             display: flex;
-            flex-direction: column;
             gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .asset-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 2px solid transparent;
+        .add-asset-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 14px;
+            outline: none;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
-        .asset-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-        }
-
-        .asset-card.strong {
+        .add-asset-input:focus {
             border-color: #00ff88;
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
 
+        .add-asset-input::placeholder {
+            color: #666;
+        }
+
+        .btn-add {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: scale(1.05);
+        }
+
+        /* Assets Grid - 8 espaços */
+        .assets-section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #00ff88;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .asset-card.strong {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            animation: glow-green 2s infinite;
+        }
+
         .asset-card.moderate {
             border-color: #ffcc00;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            background: rgba(255, 204, 0, 0.1);
         }
 
         .asset-card.weak {
             border-color: #ff4444;
-            box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+            background: rgba(255, 68, 68, 0.1);
         }
 
-        .asset-info h3 {
-            font-size: 20px;
-            margin-bottom: 5px;
+        @keyframes glow-green {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.6); }
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .asset-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .asset-rank {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .asset-rank.best {
+            background: #00ff88;
+            color: #000;
+            animation: pulse 1s infinite;
         }
 
         .asset-price {
-            font-size: 14px;
-            color: #aaa;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .asset-change {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .asset-change.positive { color: #00ff88; }
+        .asset-change.negative { color: #ff4444; }
+
+        .asset-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .asset-rsi {
+            font-size: 11px;
+            color: #888;
         }
 
         .badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 10px;
             font-weight: bold;
             text-transform: uppercase;
         }
@@ -146,19 +297,46 @@
             color: #fff;
         }
 
-        /* Buttons */
-        .btn-section {
+        /* Active Trades */
+        .active-trades {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .trade-item {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 20px 0;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .trade-timer {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ff88;
+            font-family: monospace;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .btn {
-            padding: 18px 30px;
+            padding: 15px 20px;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -167,7 +345,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: linear-gradient(135deg, #00ff88 0%, #00aa55 100%);
             color: #000;
             box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
         }
@@ -177,10 +355,24 @@
             box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
         }
 
+        .btn-turbo {
+            background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%);
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        .btn-turbo.active {
+            animation: turbo-pulse 1s infinite;
+        }
+
+        @keyframes turbo-pulse {
+            0%, 100% { box-shadow: 0 5px 20px rgba(255, 102, 0, 0.4); }
+            50% { box-shadow: 0 5px 30px rgba(255, 102, 0, 0.8); }
+        }
+
         .btn-danger {
             background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
             color: #fff;
-            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
             display: none;
         }
 
@@ -196,6 +388,19 @@
             display: none;
         }
 
+        /* Result Buttons */
+        .result-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .result-buttons .btn {
+            display: block;
+        }
+
         /* Alert Overlay */
         .alert-overlay {
             position: fixed;
@@ -203,18 +408,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 0, 0, 0.9);
+            background: rgba(255, 0, 0, 0.95);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: flash 0.5s infinite;
+            animation: flash 0.4s infinite;
         }
 
         @keyframes flash {
-            0%, 100% { opacity: 0.9; }
-            50% { opacity: 1; }
+            0%, 100% { background: rgba(255, 0, 0, 0.95); }
+            50% { background: rgba(255, 50, 50, 1); }
         }
 
         .alert-content {
@@ -222,171 +427,131 @@
             padding: 40px;
         }
 
-        .alert-title {
-            font-size: 48px;
-            font-weight: bold;
+        .alert-priority {
+            font-size: 24px;
             margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
 
         .alert-asset {
-            font-size: 36px;
-            margin-bottom: 30px;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
         }
 
         .alert-direction {
-            font-size: 64px;
+            font-size: 72px;
             font-weight: bold;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 1);
+            text-shadow: 0 0 40px rgba(255, 255, 255, 1);
+            margin-bottom: 30px;
         }
 
-        /* Analysis Section */
-        .analysis-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            display: none;
+        .alert-timer {
+            font-size: 36px;
+            color: #ffcc00;
         }
 
-        .analysis-title {
-            color: #00ff88;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-
-        .signal-card {
-            background: rgba(0, 255, 136, 0.1);
-            border: 2px solid #00ff88;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .signal-asset {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .signal-direction {
-            font-size: 32px;
-            color: #00ff88;
-            font-weight: bold;
-        }
-
-        .signal-expiration {
-            color: #aaa;
-            margin-top: 10px;
-        }
-
-        /* History Section */
+        /* History */
         .history-section {
-            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .clear-history {
+            font-size: 11px;
+            color: #ff4444;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
         }
 
         .history-win {
-            border-left: 4px solid #00ff88;
+            border-left: 3px solid #00ff88;
         }
 
         .history-loss {
-            border-left: 4px solid #ff4444;
+            border-left: 3px solid #ff4444;
         }
 
         .history-info {
             flex: 1;
         }
 
+        .history-asset {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .history-time {
+            font-size: 10px;
+            color: #666;
+        }
+
         .history-result {
             font-weight: bold;
-            font-size: 18px;
-        }
-
-        .result-win { color: #00ff88; }
-        .result-loss { color: #ff4444; }
-
-        /* Timer */
-        .timer {
-            font-size: 48px;
-            text-align: center;
-            margin: 20px 0;
-            font-weight: bold;
-            color: #00ff88;
-            display: none;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #00ff88;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(0, 255, 136, 0.3);
-            border-top-color: #00ff88;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Result Buttons */
-        .result-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .result-buttons .btn {
-            flex: 1;
-        }
-
-        /* Add Asset Input */
-        .add-asset-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .add-asset-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
             font-size: 16px;
+            padding: 4px 12px;
+            border-radius: 15px;
         }
 
-        .add-asset-input::placeholder {
-            color: #888;
+        .result-win {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
         }
 
-        .btn-add {
-            padding: 12px 20px;
+        .result-loss {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
             background: #00ff88;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .assets-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -394,10 +559,40 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="logo">🎯 SENTINEL TACTICAL</div>
-            <div class="status">
-                <span class="status-dot"></span>
-                <span id="connectionStatus">Online</span>
+            <div class="logo">🎯 SENTINEL TACTICAL PRO</div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-dot"></span>
+                    <span id="connectionStatus">Online</span>
+                </div>
+                <div class="status-item">
+                    <span>⚡</span>
+                    <span id="updateSpeed">5s</span>
+                </div>
+                <div class="status-item">
+                    <span>🎯</span>
+                    <span id="activeAssets">0/8</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="totalWins">0</div>
+                <div class="stat-label">Wins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalLosses">0</div>
+                <div class="stat-label">Losses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="winRate">0%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            <div class="stat-card" id="profitCard">
+                <div class="stat-value" id="totalProfit">R$0</div>
+                <div class="stat-label">Lucro</div>
             </div>
         </div>
 
@@ -407,30 +602,27 @@
             <button class="btn-add" onclick="addAsset()">+</button>
         </div>
 
-        <!-- Assets List -->
+        <!-- Assets Grid - 8 espaços -->
         <div class="assets-section">
-            <h2 class="section-title">📊 ATIVOS MONITORADOS</h2>
-            <div class="asset-list" id="assetList">
-                <!-- Assets will be loaded here -->
+            <h2 class="section-title">📊 TOP 8 OPORTUNIDADES</h2>
+            <div class="assets-grid" id="assetsGrid">
+                <!-- 8 assets will be loaded here -->
             </div>
         </div>
 
-        <!-- Analysis Section -->
-        <div class="analysis-section" id="analysisSection">
-            <h3 class="analysis-title">🚨 SINAL DETECTADO</h3>
-            <div id="signalContent"></div>
+        <!-- Active Trades -->
+        <div class="active-trades" id="activeTrades" style="display: none;">
+            <h3 class="section-title">⏱️ OPERAÇÕES ATIVAS (<span id="tradeCount">0</span>/3)</h3>
+            <div id="tradesList"></div>
         </div>
 
-        <!-- Timer -->
-        <div class="timer" id="timer">05:00</div>
-
-        <!-- Main Buttons -->
-        <div class="btn-section">
+        <!-- Control Panel -->
+        <div class="control-panel" id="controlPanel">
             <button class="btn btn-primary" id="startBtn" onclick="startSession()">
                 🚀 INICIAR SESSÃO
             </button>
-            <button class="btn btn-danger" id="enteredBtn" onclick="tradeEntered()">
-                ✅ ENTREI!
+            <button class="btn btn-turbo" id="turboBtn" onclick="toggleTurbo()">
+                ⚡ TURBO
             </button>
         </div>
 
@@ -446,167 +638,95 @@
 
         <!-- History -->
         <div class="history-section">
-            <h2 class="section-title">📈 HISTÓRICO</h2>
-            <div id="historyList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Carregando...</p>
-                </div>
+            <div class="history-header">
+                <h3 class="section-title">📈 HISTÓRICO</h3>
+                <span class="clear-history" onclick="clearHistory()">Limpar</span>
+            </div>
+            <div class="history-list" id="historyList">
+                <p style="text-align: center; color: #666; padding: 20px;">Nenhuma operação</p>
             </div>
         </div>
     </div>
 
     <!-- Alert Overlay -->
-    <div class="alert-overlay" id="alertOverlay">
+    <div class="alert-overlay" id="alertOverlay" onclick="closeAlert()">
         <div class="alert-content">
-            <div class="alert-title">🚨 OPORTUNIDADE!</div>
+            <div class="alert-priority">🚨 MELHOR OPORTUNIDADE #<span id="alertRank">1</span></div>
             <div class="alert-asset" id="alertAsset">EUR/USD</div>
-            <div class="alert-direction" id="alertDirection">COMPRA AGORA!</div>
+            <div class="alert-direction" id="alertDirection">COMPRA!</div>
+            <div class="alert-timer">RSI: <span id="alertRSI">25</span></div>
         </div>
     </div>
 
     <script>
         // Config
         const API_URL = 'https://sentinel-backend-1-4xzq.onrender.com';
-        let assets = ['EUR/USD', 'GBP/USD', 'BTC/USDT'];
+        const MAX_ASSETS = 8;
+        const MAX_TRADES = 3;
+        
+        let assets = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'BTC/USDT', 'ETH/USDT', 'AUD/USD', 'USD/CAD', 'XAU/USD'];
         let sessionActive = false;
-        let currentSignal = null;
-        let tradeInProgress = false;
-        let timerInterval = null;
+        let turboMode = false;
+        let activeTrades = [];
+        let updateInterval = null;
+        let assetData = {};
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadAssets();
             loadHistory();
-            setInterval(updateAssets, 5000); // Update every 5 seconds
+            updateStats();
         });
 
-        // Load Assets
-        async function loadAssets() {
-            const list = document.getElementById('assetList');
-            list.innerHTML = '';
+        // Load Assets Grid
+        function loadAssets() {
+            const grid = document.getElementById('assetsGrid');
+            grid.innerHTML = '';
             
-            for (const asset of assets) {
+            assets.slice(0, MAX_ASSETS).forEach((asset, index) => {
                 const card = document.createElement('div');
                 card.className = 'asset-card';
-                card.id = asset-${asset.replace('/', '-')};
+                card.id = asset-${index};
+                card.onclick = () => enterTrade(asset);
                 card.innerHTML = `
-                    <div class="asset-info">
-                        <h3>${asset}</h3>
-                        <div class="asset-price" id="price-${asset.replace('/', '-')}">Carregando...</div>
+                    <div class="asset-rank" id="rank-${index}">${index + 1}</div>
+                    <div class="asset-header">
+                        <span class="asset-name">${asset}</span>
                     </div>
-                    <div class="badge weak" id="badge-${asset.replace('/', '-')}">ANALISANDO</div>
+                    <div class="asset-price" id="price-${index}">--</div>
+                    <div class="asset-change" id="change-${index}">--</div>
+                    <div class="asset-footer">
+                        <span class="asset-rsi" id="rsi-${index}">RSI: --</span>
+                        <span class="badge weak" id="badge-${index}">AGUARDE</span>
+                    </div>
                 `;
-                card.onclick = () => analyzeAsset(asset);
-                list.appendChild(card);
-            }
+                grid.appendChild(card);
+            });
             
-            updateAssets();
+            document.getElementById('activeAssets').textContent = ${Math.min(assets.length, MAX_ASSETS)}/${MAX_ASSETS};
+            
+            if (sessionActive) {
+                startUpdates();
+            }
         }
 
         // Add Asset
         function addAsset() {
             const input = document.getElementById('newAsset');
-            const asset = input.value.trim().toUpperCase();
+            let asset = input.value.trim().toUpperCase();
             
-            if (asset && !assets.includes(asset)) {
+            // Format: EUR/USD or EURUSD -> EUR/USD
+            if (!asset.includes('/') && asset.length === 6) {
+                asset = asset.slice(0, 3) + '/' + asset.slice(3);
+            }
+            
+            if (asset && !assets.includes(asset) && assets.length < MAX_ASSETS) {
                 assets.push(asset);
                 input.value = '';
                 loadAssets();
-            }
-        }
-
-        // Update Assets Data
-        async function updateAssets() {
-            for (const asset of assets) {
-                try {
-                    const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
-                    const data = await response.json();
-                    
-                    updateAssetCard(asset, data);
-                } catch (error) {
-                    console.error(Erro ao atualizar ${asset}:, error);
-                }
-            }
-        }
-
-        // Update Asset Card
-        function updateAssetCard(asset, data) {
-            const safeId = asset.replace('/', '-');
-            const card = document.getElementById(asset-${safeId});
-            const badge = document.getElementById(badge-${safeId});
-            const price = document.getElementById(price-${safeId});
-            
-            if (!card || !badge) return;
-            
-            // Update price
-            if (data.price) {
-                price.textContent = R$ ${data.price.toFixed(2)};
-            }
-            
-            // Update badge
-            card.classList.remove('strong', 'moderate', 'weak');
-            badge.classList.remove('strong', 'moderate', 'weak');
-            
-            if (data.tier === 'FORTE') {
-                card.classList.add('strong');
-                badge.classList.add('strong');
-                badge.textContent = '🟢 FORTE';
-            } else if (data.tier === 'MODERADO') {
-                card.classList.add('moderate');
-                badge.classList.add('moderate');
-                badge.textContent = '🟡 MODERADO';
-            } else {
-                card.classList.add('weak');
-                badge.classList.add('weak');
-                badge.textContent = '🔴 FRACO';
-            }
-            
-            // Check for strong signal during active session
-            if (sessionActive && data.tier === 'FORTE' && data.signal && !tradeInProgress) {
-                showAlert(asset, data.signal.direction);
-            }
-        }
-
-        // Analyze Specific Asset
-        async function analyzeAsset(asset) {
-            try {
-                const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
-                const data = await response.json();
-                
-                const section = document.getElementById('analysisSection');
-                const content = document.getElementById('signalContent');
-                
-                section.style.display = 'block';
-                
-                if (data.signal) {
-                    content.innerHTML = `
-                        <div class="signal-card">
-                            <div class="signal-asset">${asset}</div>
-                            <div class="signal-direction">${data.signal.direction === 'CALL' ? '📈 COMPRA' : '📉 VENDA'}</div>
-                            <div class="signal-expiration">⏱️ Expiração: ${data.signal.expiration} minutos</div>
-                            <div style="margin-top: 10px; color: #aaa;">
-                                Preço: ${data.signal.entry.toFixed(4)}<br>
-                                RSI: ${data.indicators?.rsi || 'N/A'}
-                            </div>
-                        </div>
-                    `;
-                    
-                    currentSignal = { asset, ...data.signal };
-                } else {
-                    content.innerHTML = `
-                        <div class="signal-card" style="border-color: #ff4444;">
-                            <div class="signal-asset">${asset}</div>
-                            <div style="color: #ff4444;">Sem sinal no momento</div>
-                            <div style="margin-top: 10px; color: #aaa;">
-                                Força: ${data.tier}<br>
-                                Aguarde oportunidade FORTE 🟢
-                            </div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Erro na análise:', error);
+                if (sessionActive) updateAssets();
+            } else if (assets.length >= MAX_ASSETS) {
+                alert('Limite de 8 ativos atingido! Remova um antes de adicionar.');
             }
         }
 
@@ -614,100 +734,301 @@
         function startSession() {
             sessionActive = true;
             document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('enteredBtn').style.display = 'block';
+            document.getElementById('controlPanel').style.gridTemplateColumns = '1fr';
             
-            // Play sound
             playSound('start');
+            startUpdates();
+        }
+
+        // Toggle Turbo Mode
+        function toggleTurbo() {
+            turboMode = !turboMode;
+            const btn = document.getElementById('turboBtn');
             
-            alert('🚀 Sessão iniciada! Monitorando ativos...');
+            if (turboMode) {
+                btn.classList.add('active');
+                document.getElementById('updateSpeed').textContent = '2s';
+                playSound('turbo');
+            } else {
+                btn.classList.remove('active');
+                document.getElementById('updateSpeed').textContent = '5s';
+            }
+            
+            if (sessionActive) {
+                clearInterval(updateInterval);
+                startUpdates();
+            }
+        }
+
+        // Start Updates
+        function startUpdates() {
+            updateAssets();
+            const interval = turboMode ? 2000 : 5000;
+            updateInterval = setInterval(updateAssets, interval);
+        }
+
+        // Update All Assets
+        async function updateAssets() {
+            const updatePromises = assets.slice(0, MAX_ASSETS).map((asset, index) => 
+                updateAsset(index, asset)
+            );
+            
+            await Promise.all(updatePromises);
+            sortAssetsByStrength();
+            
+            // Check for best opportunity
+            if (sessionActive) {
+                checkBestOpportunity();
+            }
+        }
+
+        // Update Single Asset
+        async function updateAsset(index, asset) {
+            try {
+                const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
+                const data = await response.json();
+                
+                assetData[asset] = data;
+                
+                const card = document.getElementById(asset-${index});
+                const badge = document.getElementById(badge-${index});
+                const price = document.getElementById(price-${index});
+                const change = document.getElementById(change-${index});
+                const rsi = document.getElementById(rsi-${index});
+                
+                // Update price
+                if (data.price) {
+                    price.textContent = data.price.toFixed(4);
+                }
+                
+                // Update change
+                if (data.indicators?.change_24h !== undefined) {
+                    const chg = data.indicators.change_24h;
+                    change.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
+                    change.className = 'asset-change ' + (chg >= 0 ? 'positive' : 'negative');
+                }
+                
+                // Update RSI
+                if (data.indicators?.rsi !== undefined) {
+                    rsi.textContent = RSI: ${data.indicators.rsi.toFixed(1)};
+                }
+                
+                // Update badge and styling
+                card.classList.remove('strong', 'moderate', 'weak');
+                badge.classList.remove('strong', 'moderate', 'weak');
+                
+                if (data.tier === 'FORTE' && data.signal) {
+                    card.classList.add('strong');
+                    badge.classList.add('strong');
+                    badge.textContent = '🟢 ' + data.signal.direction;
+                } else if (data.tier === 'MODERADO') {
+                    card.classList.add('moderate');
+                    badge.classList.add('moderate');
+                    badge.textContent = '🟡 MODERADO';
+                } else {
+                    card.classList.add('weak');
+                    badge.classList.add('weak');
+                    badge.textContent = '🔴 FRACO';
+                }
+                
+            } catch (error) {
+                console.error(Erro em ${asset}:, error);
+            }
+        }
+
+        // Sort Assets by Strength
+        function sortAssetsByStrength() {
+            const strengthOrder = { 'FORTE': 3, 'MODERADO': 2, 'FRACO': 1 };
+            
+            const sortedAssets = assets.slice(0, MAX_ASSETS).map((asset, index) => ({
+                asset,
+                index,
+                data: assetData[asset],
+                strength: strengthOrder[assetData[asset]?.tier] || 0,
+                rsi: assetData[asset]?.indicators?.rsi || 50
+            })).sort((a, b) => {
+                if (b.strength !== a.strength) return b.strength - a.strength;
+                return Math.abs(50 - a.rsi) - Math.abs(50 - b.rsi);
+            });
+            
+            // Update ranks
+            sortedAssets.forEach((item, newRank) => {
+                const rankEl = document.getElementById(rank-${item.index});
+                if (rankEl) {
+                    rankEl.textContent = newRank + 1;
+                    rankEl.classList.toggle('best', newRank === 0 && item.strength === 3);
+                }
+            });
+        }
+
+        // Check Best Opportunity
+        function checkBestOpportunity() {
+            if (activeTrades.length >= MAX_TRADES) return;
+            
+            const bestAsset = assets.slice(0, MAX_ASSETS).find(asset => {
+                const data = assetData[asset];
+                return data?.tier === 'FORTE' && 
+                       data?.signal && 
+                       !activeTrades.some(t => t.asset === asset);
+            });
+            
+            if (bestAsset && !document.getElementById('alertOverlay').style.display) {
+                showAlert(bestAsset);
+            }
         }
 
         // Show Alert
-        function showAlert(asset, direction) {
-            tradeInProgress = true;
-            currentSignal = { asset, direction };
+        function showAlert(asset) {
+            const data = assetData[asset];
+            if (!data?.signal) return;
             
             const overlay = document.getElementById('alertOverlay');
-            const alertAsset = document.getElementById('alertAsset');
-            const alertDirection = document.getElementById('alertDirection');
-            
-            alertAsset.textContent = asset;
-            alertDirection.textContent = direction === 'CALL' ? 'COMPRA AGORA! 📈' : 'VENDA AGORA! 📉';
+            document.getElementById('alertAsset').textContent = asset;
+            document.getElementById('alertDirection').textContent = 
+                data.signal.direction === 'CALL' ? 'COMPRA!' : 'VENDA!';
+            document.getElementById('alertRSI').textContent = 
+                data.indicators?.rsi?.toFixed(1) || '--';
             
             overlay.style.display = 'flex';
             
-            // Play alert sound
+            // Alert effects
             playSound('alert');
-            
-            // Vibrate
             if (navigator.vibrate) {
-                navigator.vibrate([500, 200, 500, 200, 500]);
+                navigator.vibrate([300, 100, 300, 100, 500]);
+            }
+        }
+
+        // Close Alert
+        function closeAlert() {
+            document.getElementById('alertOverlay').style.display = 'none';
+        }
+
+        // Enter Trade
+        function enterTrade(asset) {
+            if (!sessionActive) {
+                alert('Inicie a sessão primeiro!');
+                return;
             }
             
-            // Auto hide after 10 seconds
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 10000);
-        }
-
-        // Trade Entered
-        function tradeEntered() {
-            tradeInProgress = true;
-            document.getElementById('enteredBtn').style.display = 'none';
-            document.getElementById('resultButtons').style.display = 'flex';
-            document.getElementById('timer').style.display = 'block';
+            if (activeTrades.length >= MAX_TRADES) {
+                alert(Limite de ${MAX_TRADES} operações atingido!);
+                return;
+            }
             
-            // Start 5 minute timer
-            let seconds = 300; // 5 minutes
-            const timerEl = document.getElementById('timer');
+            if (activeTrades.some(t => t.asset === asset)) {
+                alert('Operação já ativa neste ativo!');
+                return;
+            }
             
-            timerInterval = setInterval(() => {
-                seconds--;
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                timerEl.textContent = ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')};
-                
-                if (seconds <= 0) {
-                    clearInterval(timerInterval);
-                    timerEl.textContent = '00:00';
-                    playSound('finish');
-                }
-            }, 1000);
+            const data = assetData[asset];
+            if (!data?.signal) {
+                alert('Sem sinal no momento para este ativo!');
+                return;
+            }
+            
+            // Add trade
+            const trade = {
+                asset,
+                direction: data.signal.direction,
+                entry: data.price,
+                startTime: Date.now(),
+                id: Date.now()
+            };
+            
+            activeTrades.push(trade);
+            updateActiveTrades();
             
             playSound('enter');
+            
+            // Show result buttons if first trade
+            if (activeTrades.length === 1) {
+                document.getElementById('resultButtons').style.display = 'grid';
+            }
         }
 
-        // Record Result
-        async function recordResult(result) {
-            clearInterval(timerInterval);
+        // Update Active Trades Display
+        function updateActiveTrades() {
+            const section = document.getElementById('activeTrades');
+            const list = document.getElementById('tradesList');
+            const count = document.getElementById('tradeCount');
             
-            const trade = {
-                asset: currentSignal?.asset || 'Unknown',
-                direction: currentSignal?.direction || 'Unknown',
+            if (activeTrades.length === 0) {
+                section.style.display = 'none';
+                document.getElementById('resultButtons').style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            count.textContent = activeTrades.length;
+            
+            list.innerHTML = activeTrades.map(trade => {
+                const elapsed = Math.floor((Date.now() - trade.startTime) / 1000);
+                const remaining = Math.max(0, 300 - elapsed); // 5 minutes
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                const timer = ${mins}:${secs.toString().padStart(2, '0')};
+                
+                return `
+                    <div class="trade-item">
+                        <div>
+                            <strong>${trade.asset}</strong>
+                            <div style="font-size: 11px; color: #888;">
+                                ${trade.direction === 'CALL' ? '📈 COMPRA' : '📉 VENDA'} @ ${trade.entry.toFixed(4)}
+                            </div>
+                        </div>
+                        <div class="trade-timer">${timer}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Timers
+        setInterval(() => {
+            if (activeTrades.length > 0) {
+                updateActiveTrades();
+                
+                // Check expired trades
+                activeTrades = activeTrades.filter(trade => {
+                    const elapsed = (Date.now() - trade.startTime) / 1000;
+                    if (elapsed >= 300) {
+                        playSound('finish');
+                        return false;
+                    }
+                    return true;
+                });
+                
+                if (activeTrades.length === 0) {
+                    updateActiveTrades();
+                }
+            }
+        }, 1000);
+
+        // Record Result
+        function recordResult(result) {
+            if (activeTrades.length === 0) return;
+            
+            const trade = activeTrades[0]; // Record for first trade
+            activeTrades.shift(); // Remove it
+            
+            const record = {
+                asset: trade.asset,
+                direction: trade.direction,
                 result: result,
+                profit: result === 'WIN' ? 85 : -100, // R$85 win, R$100 loss
                 timestamp: new Date().toISOString()
             };
             
-            // Save to localStorage (in real app, send to backend)
+            // Save to history
             let history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
-            history.unshift(trade);
+            history.unshift(record);
             localStorage.setItem('tradeHistory', JSON.stringify(history));
             
-            // Reset UI
-            document.getElementById('resultButtons').style.display = 'none';
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('startBtn').style.display = 'block';
-            
-            tradeInProgress = false;
-            currentSignal = null;
-            
-            // Play sound
-            playSound(result === 'WIN' ? 'win' : 'loss');
-            
-            // Refresh history
+            // Update UI
+            updateActiveTrades();
             loadHistory();
+            updateStats();
             
-            alert(${result === 'WIN' ? '🏆 WIN!' : '❌ LOSS'} registrado!);
+            playSound(result === 'WIN' ? 'win' : 'loss');
         }
 
         // Load History
@@ -716,65 +1037,78 @@
             const list = document.getElementById('historyList');
             
             if (history.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #888;">Nenhuma operação registrada</p>';
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Nenhuma operação</p>';
                 return;
             }
             
-            list.innerHTML = history.map(trade => `
-                <div class="history-item ${trade.result === 'WIN' ? 'history-win' : 'history-loss'}">
+            list.innerHTML = history.slice(0, 10).map(trade => `
+                <div class="history-item history-${trade.result.toLowerCase()}">
                     <div class="history-info">
-                        <strong>${trade.asset}</strong>
-                        <div style="font-size: 12px; color: #888;">
-                            ${new Date(trade.timestamp).toLocaleString('pt-BR')}
-                        </div>
+                        <div class="history-asset">${trade.asset} ${trade.direction === 'CALL' ? '📈' : '📉'}</div>
+                        <div class="history-time">${new Date(trade.timestamp).toLocaleTimeString('pt-BR')}</div>
                     </div>
-                    <div class="history-result ${trade.result === 'WIN' ? 'result-win' : 'result-loss'}">
-                        ${trade.result}
-                    </div>
+                    <span class="history-result result-${trade.result.toLowerCase()}">
+                        ${trade.result === 'WIN' ? '🏆' : '❌'} ${trade.result}
+                    </span>
                 </div>
             `).join('');
         }
 
-        // Play Sound (using Web Audio API)
-        function playSound(type) {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+        // Update Stats
+        function updateStats() {
+            const history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
+            const wins = history.filter(t => t.result === 'WIN').length;
+            const losses = history.filter(t => t.result === 'LOSS').length;
+            const total = wins + losses;
+            const profit = history.reduce((sum, t) => sum + (t.profit || 0), 0);
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            document.getElementById('totalWins').textContent = wins;
+            document.getElementById('totalLosses').textContent = losses;
+            document.getElementById('winRate').textContent = total > 0 ? 
+                Math.round((wins / total) * 100) + '%' : '0%';
+            document.getElementById('totalProfit').textContent = 
+                (profit >= 0 ? '+R$' : '-R$') + Math.abs(profit);
             
-            switch(type) {
-                case 'alert':
-                    oscillator.frequency.value = 800;
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                    break;
-                case 'win':
-                    oscillator.frequency.value = 1200;
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.3);
-                    break;
-                case 'loss':
-                    oscillator.frequency.value = 300;
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                    break;
-                default:
-                    oscillator.frequency.value = 600;
-                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 0.2);
+            document.getElementById('profitCard').classList.toggle('negative', profit < 0);
+        }
+
+        // Clear History
+        function clearHistory() {
+            if (confirm('Limpar todo o histórico?')) {
+                localStorage.removeItem('tradeHistory');
+                loadHistory();
+                updateStats();
             }
         }
 
-        // Close alert on click
-        document.getElementById('alertOverlay').onclick = function() {
-            this.style.display = 'none';
-        };
+        // Play Sound
+        function playSound(type) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            const sounds = {
+                start: { freq: 600, duration: 0.2, type: 'sine' },
+                turbo: { freq: 800, duration: 0.1, type: 'square' },
+                alert: { freq: 1000, duration: 0.5, type: 'sawtooth' },
+                enter: { freq: 700, duration: 0.3, type: 'sine' },
+                win: { freq: 1200, duration: 0.4, type: 'sine' },
+                loss: { freq: 300, duration: 0.6, type: 'sawtooth' },
+                finish: { freq: 500, duration: 0.2, type: 'sine' }
+            };
+            
+            const s = sounds[type] || sounds.start;
+            osc.frequency.value = s.freq;
+            osc.type = s.type;
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + s.duration);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + s.duration);
+        }
     </script>
 </body>
 </html>
