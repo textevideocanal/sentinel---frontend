@@ -25,7 +25,6 @@
             padding: 15px;
         }
 
-        /* Header */
         .header {
             text-align: center;
             padding: 15px 0;
@@ -78,7 +77,6 @@
             50% { opacity: 0.6; transform: scale(0.8); }
         }
 
-        /* Stats Bar */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -111,7 +109,6 @@
             color: #ff4444;
         }
 
-        /* Add Asset */
         .add-asset-section {
             display: flex;
             gap: 10px;
@@ -155,7 +152,6 @@
             transform: scale(1.05);
         }
 
-        /* Assets Grid - 8 espaços */
         .assets-section {
             margin-bottom: 15px;
         }
@@ -175,6 +171,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            min-height: 200px;
         }
 
         .asset-card {
@@ -297,7 +294,6 @@
             color: #fff;
         }
 
-        /* Active Trades */
         .active-trades {
             background: rgba(0, 255, 136, 0.05);
             border: 1px solid rgba(0, 255, 136, 0.2);
@@ -324,7 +320,6 @@
             font-family: monospace;
         }
 
-        /* Control Panel */
         .control-panel {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -388,7 +383,6 @@
             display: none;
         }
 
-        /* Result Buttons */
         .result-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -401,7 +395,6 @@
             display: block;
         }
 
-        /* Alert Overlay */
         .alert-overlay {
             position: fixed;
             top: 0;
@@ -453,7 +446,6 @@
             color: #ffcc00;
         }
 
-        /* History */
         .history-section {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
@@ -529,7 +521,6 @@
             color: #ff4444;
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -543,7 +534,6 @@
             border-radius: 3px;
         }
 
-        /* Responsive */
         @media (max-width: 400px) {
             .assets-grid {
                 grid-template-columns: 1fr;
@@ -557,7 +547,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="logo">🎯 SENTINEL TACTICAL PRO</div>
             <div class="status-bar">
@@ -576,7 +565,6 @@
             </div>
         </div>
 
-        <!-- Stats -->
         <div class="stats-bar">
             <div class="stat-card">
                 <div class="stat-value" id="totalWins">0</div>
@@ -596,27 +584,23 @@
             </div>
         </div>
 
-        <!-- Add Asset -->
         <div class="add-asset-section">
             <input type="text" class="add-asset-input" id="newAsset" placeholder="Adicionar par (ex: USD/JPY)">
             <button class="btn-add" onclick="addAsset()">+</button>
         </div>
 
-        <!-- Assets Grid - 8 espaços -->
         <div class="assets-section">
             <h2 class="section-title">📊 TOP 8 OPORTUNIDADES</h2>
             <div class="assets-grid" id="assetsGrid">
-                <!-- 8 assets will be loaded here -->
+                <!-- Assets will be loaded here -->
             </div>
         </div>
 
-        <!-- Active Trades -->
         <div class="active-trades" id="activeTrades" style="display: none;">
             <h3 class="section-title">⏱️ OPERAÇÕES ATIVAS (<span id="tradeCount">0</span>/3)</h3>
             <div id="tradesList"></div>
         </div>
 
-        <!-- Control Panel -->
         <div class="control-panel" id="controlPanel">
             <button class="btn btn-primary" id="startBtn" onclick="startSession()">
                 🚀 INICIAR SESSÃO
@@ -626,7 +610,6 @@
             </button>
         </div>
 
-        <!-- Result Buttons -->
         <div class="result-buttons" id="resultButtons">
             <button class="btn btn-success" onclick="recordResult('WIN')">
                 🏆 WIN
@@ -636,7 +619,6 @@
             </button>
         </div>
 
-        <!-- History -->
         <div class="history-section">
             <div class="history-header">
                 <h3 class="section-title">📈 HISTÓRICO</h3>
@@ -648,7 +630,6 @@
         </div>
     </div>
 
-    <!-- Alert Overlay -->
     <div class="alert-overlay" id="alertOverlay" onclick="closeAlert()">
         <div class="alert-content">
             <div class="alert-priority">🚨 MELHOR OPORTUNIDADE #<span id="alertRank">1</span></div>
@@ -672,7 +653,7 @@
         let assetData = {};
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             loadAssets();
             loadHistory();
             updateStats();
@@ -683,27 +664,26 @@
             const grid = document.getElementById('assetsGrid');
             grid.innerHTML = '';
             
-            assets.slice(0, MAX_ASSETS).forEach((asset, index) => {
+            assets.slice(0, MAX_ASSETS).forEach(function(asset, index) {
                 const card = document.createElement('div');
                 card.className = 'asset-card';
-                card.id = asset-${index};
-                card.onclick = () => enterTrade(asset);
-                card.innerHTML = `
-                    <div class="asset-rank" id="rank-${index}">${index + 1}</div>
-                    <div class="asset-header">
-                        <span class="asset-name">${asset}</span>
-                    </div>
-                    <div class="asset-price" id="price-${index}">--</div>
-                    <div class="asset-change" id="change-${index}">--</div>
-                    <div class="asset-footer">
-                        <span class="asset-rsi" id="rsi-${index}">RSI: --</span>
-                        <span class="badge weak" id="badge-${index}">AGUARDE</span>
-                    </div>
-                `;
+                card.id = 'asset-' + index;
+                card.onclick = function() { enterTrade(asset); };
+                card.innerHTML = 
+                    '<div class="asset-rank" id="rank-' + index + '">' + (index + 1) + '</div>' +
+                    '<div class="asset-header">' +
+                        '<span class="asset-name">' + asset + '</span>' +
+                    '</div>' +
+                    '<div class="asset-price" id="price-' + index + '">--</div>' +
+                    '<div class="asset-change" id="change-' + index + '">--</div>' +
+                    '<div class="asset-footer">' +
+                        '<span class="asset-rsi" id="rsi-' + index + '">RSI: --</span>' +
+                        '<span class="badge weak" id="badge-' + index + '">AGUARDE</span>' +
+                    '</div>';
                 grid.appendChild(card);
             });
             
-            document.getElementById('activeAssets').textContent = ${Math.min(assets.length, MAX_ASSETS)}/${MAX_ASSETS};
+            document.getElementById('activeAssets').textContent = Math.min(assets.length, MAX_ASSETS) + '/' + MAX_ASSETS;
             
             if (sessionActive) {
                 startUpdates();
@@ -715,7 +695,6 @@
             const input = document.getElementById('newAsset');
             let asset = input.value.trim().toUpperCase();
             
-            // Format: EUR/USD or EURUSD -> EUR/USD
             if (!asset.includes('/') && asset.length === 6) {
                 asset = asset.slice(0, 3) + '/' + asset.slice(3);
             }
@@ -769,51 +748,50 @@
 
         // Update All Assets
         async function updateAssets() {
-            const updatePromises = assets.slice(0, MAX_ASSETS).map((asset, index) => 
-                updateAsset(index, asset)
-            );
-            
-            await Promise.all(updatePromises);
-            sortAssetsByStrength();
-            
-            // Check for best opportunity
-            if (sessionActive) {
-                checkBestOpportunity();
+            try {
+                const updatePromises = assets.slice(0, MAX_ASSETS).map(function(asset, index) {
+                    return updateAsset(index, asset);
+                });
+                
+                await Promise.all(updatePromises);
+                sortAssetsByStrength();
+                
+                if (sessionActive) {
+                    checkBestOpportunity();
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar ativos:', error);
             }
         }
 
         // Update Single Asset
         async function updateAsset(index, asset) {
             try {
-                const response = await fetch(${API_URL}/analyze/${encodeURIComponent(asset)});
+                const response = await fetch(API_URL + '/analyze/' + encodeURIComponent(asset));
                 const data = await response.json();
                 
                 assetData[asset] = data;
                 
-                const card = document.getElementById(asset-${index});
-                const badge = document.getElementById(badge-${index});
-                const price = document.getElementById(price-${index});
-                const change = document.getElementById(change-${index});
-                const rsi = document.getElementById(rsi-${index});
+                const card = document.getElementById('asset-' + index);
+                const badge = document.getElementById('badge-' + index);
+                const price = document.getElementById('price-' + index);
+                const change = document.getElementById('change-' + index);
+                const rsi = document.getElementById('rsi-' + index);
                 
-                // Update price
                 if (data.price) {
                     price.textContent = data.price.toFixed(4);
                 }
                 
-                // Update change
-                if (data.indicators?.change_24h !== undefined) {
+                if (data.indicators && data.indicators.change_24h !== undefined) {
                     const chg = data.indicators.change_24h;
                     change.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
                     change.className = 'asset-change ' + (chg >= 0 ? 'positive' : 'negative');
                 }
                 
-                // Update RSI
-                if (data.indicators?.rsi !== undefined) {
-                    rsi.textContent = RSI: ${data.indicators.rsi.toFixed(1)};
+                if (data.indicators && data.indicators.rsi !== undefined) {
+                    rsi.textContent = 'RSI: ' + data.indicators.rsi.toFixed(1);
                 }
                 
-                // Update badge and styling
                 card.classList.remove('strong', 'moderate', 'weak');
                 badge.classList.remove('strong', 'moderate', 'weak');
                 
@@ -832,7 +810,7 @@
                 }
                 
             } catch (error) {
-                console.error(Erro em ${asset}:, error);
+                console.error('Erro em ' + asset + ':', error);
             }
         }
 
@@ -840,20 +818,22 @@
         function sortAssetsByStrength() {
             const strengthOrder = { 'FORTE': 3, 'MODERADO': 2, 'FRACO': 1 };
             
-            const sortedAssets = assets.slice(0, MAX_ASSETS).map((asset, index) => ({
-                asset,
-                index,
-                data: assetData[asset],
-                strength: strengthOrder[assetData[asset]?.tier] || 0,
-                rsi: assetData[asset]?.indicators?.rsi || 50
-            })).sort((a, b) => {
+            const sortedAssets = assets.slice(0, MAX_ASSETS).map(function(asset, index) {
+                const data = assetData[asset];
+                return {
+                    asset: asset,
+                    index: index,
+                    data: data,
+                    strength: strengthOrder[data && data.tier] || 0,
+                    rsi: (data && data.indicators && data.indicators.rsi) || 50
+                };
+            }).sort(function(a, b) {
                 if (b.strength !== a.strength) return b.strength - a.strength;
                 return Math.abs(50 - a.rsi) - Math.abs(50 - b.rsi);
             });
             
-            // Update ranks
-            sortedAssets.forEach((item, newRank) => {
-                const rankEl = document.getElementById(rank-${item.index});
+            sortedAssets.forEach(function(item, newRank) {
+                const rankEl = document.getElementById('rank-' + item.index);
                 if (rankEl) {
                     rankEl.textContent = newRank + 1;
                     rankEl.classList.toggle('best', newRank === 0 && item.strength === 3);
@@ -865,11 +845,11 @@
         function checkBestOpportunity() {
             if (activeTrades.length >= MAX_TRADES) return;
             
-            const bestAsset = assets.slice(0, MAX_ASSETS).find(asset => {
+            const bestAsset = assets.slice(0, MAX_ASSETS).find(function(asset) {
                 const data = assetData[asset];
-                return data?.tier === 'FORTE' && 
-                       data?.signal && 
-                       !activeTrades.some(t => t.asset === asset);
+                return data && data.tier === 'FORTE' && 
+                       data.signal && 
+                       !activeTrades.some(function(t) { return t.asset === asset; });
             });
             
             if (bestAsset && !document.getElementById('alertOverlay').style.display) {
@@ -880,18 +860,17 @@
         // Show Alert
         function showAlert(asset) {
             const data = assetData[asset];
-            if (!data?.signal) return;
+            if (!data || !data.signal) return;
             
             const overlay = document.getElementById('alertOverlay');
             document.getElementById('alertAsset').textContent = asset;
             document.getElementById('alertDirection').textContent = 
                 data.signal.direction === 'CALL' ? 'COMPRA!' : 'VENDA!';
             document.getElementById('alertRSI').textContent = 
-                data.indicators?.rsi?.toFixed(1) || '--';
+                (data.indicators && data.indicators.rsi) ? data.indicators.rsi.toFixed(1) : '--';
             
             overlay.style.display = 'flex';
             
-            // Alert effects
             playSound('alert');
             if (navigator.vibrate) {
                 navigator.vibrate([300, 100, 300, 100, 500]);
@@ -911,24 +890,23 @@
             }
             
             if (activeTrades.length >= MAX_TRADES) {
-                alert(Limite de ${MAX_TRADES} operações atingido!);
+                alert('Limite de ' + MAX_TRADES + ' operações atingido!');
                 return;
             }
             
-            if (activeTrades.some(t => t.asset === asset)) {
+            if (activeTrades.some(function(t) { return t.asset === asset; })) {
                 alert('Operação já ativa neste ativo!');
                 return;
             }
             
             const data = assetData[asset];
-            if (!data?.signal) {
+            if (!data || !data.signal) {
                 alert('Sem sinal no momento para este ativo!');
                 return;
             }
             
-            // Add trade
             const trade = {
-                asset,
+                asset: asset,
                 direction: data.signal.direction,
                 entry: data.price,
                 startTime: Date.now(),
@@ -940,7 +918,6 @@
             
             playSound('enter');
             
-            // Show result buttons if first trade
             if (activeTrades.length === 1) {
                 document.getElementById('resultButtons').style.display = 'grid';
             }
@@ -961,34 +938,31 @@
             section.style.display = 'block';
             count.textContent = activeTrades.length;
             
-            list.innerHTML = activeTrades.map(trade => {
+            list.innerHTML = activeTrades.map(function(trade) {
                 const elapsed = Math.floor((Date.now() - trade.startTime) / 1000);
-                const remaining = Math.max(0, 300 - elapsed); // 5 minutes
+                const remaining = Math.max(0, 300 - elapsed);
                 const mins = Math.floor(remaining / 60);
                 const secs = remaining % 60;
-                const timer = ${mins}:${secs.toString().padStart(2, '0')};
+                const timer = mins + ':' + secs.toString().padStart(2, '0');
                 
-                return `
-                    <div class="trade-item">
-                        <div>
-                            <strong>${trade.asset}</strong>
-                            <div style="font-size: 11px; color: #888;">
-                                ${trade.direction === 'CALL' ? '📈 COMPRA' : '📉 VENDA'} @ ${trade.entry.toFixed(4)}
-                            </div>
-                        </div>
-                        <div class="trade-timer">${timer}</div>
-                    </div>
-                `;
+                return '<div class="trade-item">' +
+                    '<div>' +
+                        '<strong>' + trade.asset + '</strong>' +
+                        '<div style="font-size: 11px; color: #888;">' +
+                            (trade.direction === 'CALL' ? '📈 COMPRA' : '📉 VENDA') + ' @ ' + trade.entry.toFixed(4) +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="trade-timer">' + timer + '</div>' +
+                '</div>';
             }).join('');
         }
 
         // Update Timers
-        setInterval(() => {
+        setInterval(function() {
             if (activeTrades.length > 0) {
                 updateActiveTrades();
                 
-                // Check expired trades
-                activeTrades = activeTrades.filter(trade => {
+                activeTrades = activeTrades.filter(function(trade) {
                     const elapsed = (Date.now() - trade.startTime) / 1000;
                     if (elapsed >= 300) {
                         playSound('finish');
@@ -1007,23 +981,21 @@
         function recordResult(result) {
             if (activeTrades.length === 0) return;
             
-            const trade = activeTrades[0]; // Record for first trade
-            activeTrades.shift(); // Remove it
+            const trade = activeTrades[0];
+            activeTrades.shift();
             
             const record = {
                 asset: trade.asset,
                 direction: trade.direction,
                 result: result,
-                profit: result === 'WIN' ? 85 : -100, // R$85 win, R$100 loss
+                profit: result === 'WIN' ? 85 : -100,
                 timestamp: new Date().toISOString()
             };
             
-            // Save to history
             let history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
             history.unshift(record);
             localStorage.setItem('tradeHistory', JSON.stringify(history));
             
-            // Update UI
             updateActiveTrades();
             loadHistory();
             updateStats();
@@ -1041,26 +1013,26 @@
                 return;
             }
             
-            list.innerHTML = history.slice(0, 10).map(trade => `
-                <div class="history-item history-${trade.result.toLowerCase()}">
-                    <div class="history-info">
-                        <div class="history-asset">${trade.asset} ${trade.direction === 'CALL' ? '📈' : '📉'}</div>
-                        <div class="history-time">${new Date(trade.timestamp).toLocaleTimeString('pt-BR')}</div>
-                    </div>
-                    <span class="history-result result-${trade.result.toLowerCase()}">
-                        ${trade.result === 'WIN' ? '🏆' : '❌'} ${trade.result}
-                    </span>
-                </div>
-            `).join('');
+            list.innerHTML = history.slice(0, 10).map(function(trade) {
+                return '<div class="history-item history-' + trade.result.toLowerCase() + '">' +
+                    '<div class="history-info">' +
+                        '<div class="history-asset">' + trade.asset + ' ' + (trade.direction === 'CALL' ? '📈' : '📉') + '</div>' +
+                        '<div class="history-time">' + new Date(trade.timestamp).toLocaleTimeString('pt-BR') + '</div>' +
+                    '</div>' +
+                    '<span class="history-result result-' + trade.result.toLowerCase() + '">' +
+                        (trade.result === 'WIN' ? '🏆' : '❌') + ' ' + trade.result +
+                    '</span>' +
+                '</div>';
+            }).join('');
         }
 
         // Update Stats
         function updateStats() {
             const history = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
-            const wins = history.filter(t => t.result === 'WIN').length;
-            const losses = history.filter(t => t.result === 'LOSS').length;
+            const wins = history.filter(function(t) { return t.result === 'WIN'; }).length;
+            const losses = history.filter(function(t) { return t.result === 'LOSS'; }).length;
             const total = wins + losses;
-            const profit = history.reduce((sum, t) => sum + (t.profit || 0), 0);
+            const profit = history.reduce(function(sum, t) { return sum + (t.profit || 0); }, 0);
             
             document.getElementById('totalWins').textContent = wins;
             document.getElementById('totalLosses').textContent = losses;
@@ -1083,31 +1055,35 @@
 
         // Play Sound
         function playSound(type) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            const sounds = {
-                start: { freq: 600, duration: 0.2, type: 'sine' },
-                turbo: { freq: 800, duration: 0.1, type: 'square' },
-                alert: { freq: 1000, duration: 0.5, type: 'sawtooth' },
-                enter: { freq: 700, duration: 0.3, type: 'sine' },
-                win: { freq: 1200, duration: 0.4, type: 'sine' },
-                loss: { freq: 300, duration: 0.6, type: 'sawtooth' },
-                finish: { freq: 500, duration: 0.2, type: 'sine' }
-            };
-            
-            const s = sounds[type] || sounds.start;
-            osc.frequency.value = s.freq;
-            osc.type = s.type;
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + s.duration);
-            
-            osc.start();
-            osc.stop(ctx.currentTime + s.duration);
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                const sounds = {
+                    start: { freq: 600, duration: 0.2, type: 'sine' },
+                    turbo: { freq: 800, duration: 0.1, type: 'square' },
+                    alert: { freq: 1000, duration: 0.5, type: 'sawtooth' },
+                    enter: { freq: 700, duration: 0.3, type: 'sine' },
+                    win: { freq: 1200, duration: 0.4, type: 'sine' },
+                    loss: { freq: 300, duration: 0.6, type: 'sawtooth' },
+                    finish: { freq: 500, duration: 0.2, type: 'sine' }
+                };
+                
+                const s = sounds[type] || sounds.start;
+                osc.frequency.value = s.freq;
+                osc.type = s.type;
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + s.duration);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + s.duration);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
         }
     </script>
 </body>
